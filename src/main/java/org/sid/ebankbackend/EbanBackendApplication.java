@@ -1,14 +1,12 @@
 package org.sid.ebankbackend;
 
-import org.sid.ebankbackend.entities.AccountOperation;
-import org.sid.ebankbackend.entities.Customer;
-import org.sid.ebankbackend.entities.CurrentAccount;
-import org.sid.ebankbackend.entities.SavingAccount;
+import org.sid.ebankbackend.entities.*;
 import org.sid.ebankbackend.enums.AccountStatus;
 import org.sid.ebankbackend.enums.OperationType;
 import org.sid.ebankbackend.repositories.AccountOperationRepository;
 import org.sid.ebankbackend.repositories.BankAccountRepository;
 import org.sid.ebankbackend.repositories.CustomerRepository;
+import org.sid.ebankbackend.services.BankService;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -24,15 +22,20 @@ public class EbanBackendApplication {
     public static void main(String[] args) {
         SpringApplication.run(EbanBackendApplication.class, args);
     }
-
-
     @Bean
+    CommandLineRunner commandLineRunner(BankService bankService){
+        return  args ->{
+            bankService.consulter();
+        };
+    }
+
+    //@Bean
     CommandLineRunner start(CustomerRepository customerRepository,
                             BankAccountRepository bankAccountRepository,
                             AccountOperationRepository accountOperationRepository){
         return args -> {
             Stream.of("Hassan","Yassine","Aicha").forEach(name->{
-                Customer customer=new Customer();
+                org.sid.ebankbackend.entities.Customer customer=new Customer();
                 customer.setName(name);
                 customer.setEmail(name+"@gmail.com");
                 customerRepository.save(customer);
@@ -64,6 +67,7 @@ public class EbanBackendApplication {
                     accountOperation.setBankAccount(acc);
                     accountOperationRepository.save(accountOperation);
                 }
+
             });
         };
     }
